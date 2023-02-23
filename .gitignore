@@ -2,3 +2,5 @@
 dwm
 *.diff
 config.h
+*.rej
+*.h.rej
