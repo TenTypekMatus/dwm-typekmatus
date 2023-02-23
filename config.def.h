@@ -1,5 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-#include "mediakeys.h"
+#include <X11/XF86keysym.h> 
 /* appearance */
 static const unsigned int borderpx  = 2;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
@@ -38,6 +38,45 @@ static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
 
+/**
+ * dwmconfig.h 
+ * Hardware multimedia keys
+ */
+/* Somewhere at the beginning of config.h include: */
+
+/* 
+ You obviously need the X11 development packages installed, X11proto in particular, but 
+ here is the location of the upstream copy of the keysyms header if you can't bother 
+ using the contents  of your own hard drive. ;-P
+ 
+ https://cgit.freedesktop.org/xorg/proto/x11proto/tree/XF86keysym.h
+*/
+
+#include <X11/XF86keysym.h>
+
+/* Add somewhere in your constants definition section */
+static const char *upvol[]   = { "/usr/bin/pactl", "set-sink-volume", "0", "+5%",     NULL };
+static const char *downvol[] = { "/usr/bin/pactl", "set-sink-volume", "0", "-5%",     NULL };
+static const char *mutevol[] = { "/usr/bin/pactl", "set-sink-mute",   "0", "toggle",  NULL };
+
+/* If you use amixer, use this instead. Thanks go to DaniOrt3ga. */
+static const char *upvol[] = { "/usr/bin/amixer", "set", "Master", "5%+", NULL };
+static const char *downvol[] = { "/usr/bin/amixer", "set", "Master", "5%-", NULL };
+static const char *mutevol[] = { "/usr/bin/amixerl", "set", "Master", "toggle", NULL };
+
+/* To use light add this to the constant definition section. Thanks Hritik14. */
+static const char *light_up[] = {"/usr/bin/light", "-A", "5", NULL};
+static const char *light_down[] = {"/usr/bin/light", "-U", "5", NULL};
+
+
+/* Add to keys[] array. With 0 as modifier, you are able to use the keys directly. */
+static Key keys[] = {
+	{ 0,                       XF86XK_AudioLowerVolume, spawn, {.v = downvol } }
+	{ 0,                       XF86XK_AudioMute, spawn, {.v = mutevol } }
+	{ 0,                       XF86XK_AudioRaiseVolume, spawn, {.v = upvol   } }
+};
+
+
 static const Layout layouts[] = {
 	/* symbol     arrange function */
 	{ "[]=",      tile },    /* first entry is default */
@@ -60,6 +99,8 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "j4-dmenu-desktop", NULL };
 static const char *termcmd[]  = { "st", NULL };
+
+
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -98,7 +139,7 @@ static const Key keys[] = {
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
-	{ MODKEY,             XK_q,      quit,           {0} },
+	{ MODKEY,             XK_q,     quit,           {0} },
 };
 
 /* button definitions */
